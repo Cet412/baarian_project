@@ -8,12 +8,69 @@ Jalankan perintah berikut di terminal:
 pip install ultralytics opencv-python paho-mqtt gtts
 ```
 
-### 3️⃣ Instalasi Library di ESP32
-Unggah file **machine_i2c_lcd.py** ke ESP32 lalu jalankan perintah berikut di MicroPython:
-```sh
-import upip
-upip.install('umqtt.simple')
+### **📌 Cara Instalasi Library di ESP32 menggunakan Thonny IDE**  
+---
+
+### **🛠 1️⃣ Persiapan Awal**
+Sebelum memulai, pastikan sudah:
+✅ Menginstal **Thonny IDE**  
+✅ Menghubungkan **ESP32 ke komputer** melalui kabel USB  
+✅ Menginstal **MicroPython firmware** di ESP32  
+✅ Menyiapkan file **machine_i2c_lcd.py** di komputer  
+
+---
+
+### **📂 2️⃣ Mengunggah File `machine_i2c_lcd.py` ke ESP32**
+1️⃣ **Buka Thonny IDE**  
+2️⃣ **Hubungkan ESP32 ke Thonny**:
+   - Klik **Tools** → **Options...**  
+   - Pilih tab **Interpreter**  
+   - Pada "Interpreter", pilih **MicroPython (ESP32)**  
+   - Pada "Port", pilih COM port ESP32 (misalnya: COM3 atau /dev/ttyUSB0)  
+   - Klik **OK**  
+
+3️⃣ **Buka File Manager ESP32**:
+   - Klik **View** → **Files**  
+   - Akan muncul **File Explorer**, yang menampilkan file di komputer dan di ESP32  
+
+4️⃣ **Unggah file `machine_i2c_lcd.py` ke ESP32**:
+   - Di panel kiri (komputer), cari file **machine_i2c_lcd.py**  
+   - Klik kanan file tersebut → Pilih **Upload to / (ESP32)**  
+   - File akan diunggah ke ESP32  
+
+💡 **Cek apakah file berhasil diunggah**:  
+   - Ketik di Thonny Shell:  
+     ```python
+     import os
+     os.listdir()
+     ```
+   - Jika `machine_i2c_lcd.py` muncul, berarti sudah berhasil ter-upload.  
+
+---
+
+### **📥 3️⃣ Instal Library `umqtt.simple` di ESP32**
+Sekarang, kita akan menginstal library **umqtt.simple** menggunakan **upip**.  
+
+1️⃣ **Buka Thonny Shell**  
+2️⃣ **Jalankan perintah berikut di MicroPython**:
+   ```python
+   import upip
+   upip.install('umqtt.simple')
+   ```
+3️⃣ **Tunggu beberapa detik** sampai proses instalasi selesai.  
+4️⃣ Jika berhasil, tidak akan ada error, dan library sudah bisa digunakan di ESP32.
+
+---
+
+### **✅ 4️⃣ Cek Apakah Library Sudah Terinstal**
+Untuk memastikan `umqtt.simple` sudah terinstal, jalankan di Thonny:  
+```python
+import umqtt.simple
+print("Library umqtt.simple berhasil diinstal!")
 ```
+Jika tidak ada error, berarti library sudah siap digunakan.
+
+---
 
 ## 🚀 Cara Penggunaan
 ### 1️⃣ Jalankan Model di PC
