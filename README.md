@@ -103,8 +103,8 @@ Broker MQTT yang digunakan adalah **broker.emqx.io**.
 
 ## 🛠️ Hardware yang Digunakan
 - **ESP32**
-- **LCD I2C 16x2**
-- **Kamera (Webcam/ESP32-CAM)**
+- **LCD I2C 20x4**
+- **Kamera (Webcam)**
 - **PC/Laptop dengan Python**
 
 ## 🔧 Troubleshooting
@@ -124,5 +124,3 @@ Jika ESP32 tidak menampilkan teks:
 Proyek ini dibuat untuk keperluan riset dan edukasi.
 
 ---
-🚀 **Baarian** - Membantu komunikasi antara pengguna bahasa isyarat dan masyarakat luas.
-
