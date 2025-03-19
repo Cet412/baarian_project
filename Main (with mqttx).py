@@ -3,14 +3,13 @@ import cv2
 import time
 import paho.mqtt.client as mqtt
 from gtts import gTTS
-import base64
 
 # Konfigurasi MQTT
 MQTT_BROKER = "broker.emqx.io"
 MQTT_PORT = 1883
-MQTT_TOPIC_TEXT = "baarian/text_message"
-MQTT_TOPIC_AUDIO = "baarian/audio_message"
-AUDIO_FILE = "output.wav"
+MQTT_TOPIC_TEXT = "baarian/text_message" # sesuaikan topic buat text (mqtt)
+MQTT_TOPIC_AUDIO = "baarian/audio_message" # sesuaikan topic buat audio (mqtt)
+AUDIO_FILE = "output.wav" # nama output file, jangan diubah supaya gk teerjadi overwrite
 
 # Inisialisasi MQTT Client
 client = mqtt.Client()
@@ -50,7 +49,7 @@ def text_to_speech(text):
     print(f"File suara dibuat: {AUDIO_FILE}")
 
 # Load model YOLO
-model = YOLO(r"Baarian_Model.pt")
+model = YOLO(r"myenv\Baarian-SIC-and-JISF\Baarian_BISINDO.pt") # sesuaikan dengan path model pytorch nya (.pt), pake relative path juga bisa
 cap = cv2.VideoCapture(0)
 
 last_detection_time = time.time()
