@@ -25,7 +25,7 @@ print("WiFi Connected:", sta.ifconfig())
 # **Setup MQTT**
 MQTT_BROKER = "broker.emqx.io"
 CLIENT_ID = "83hiufeg728j20"
-TOPIC_TEXT = "Baarian/text_message"
+TOPIC_TEXT = "baarian/text_message"
 TOPIC_AUDIO = "baarian/audio_message"
 
 # **Setup I2C LCD**
@@ -58,7 +58,7 @@ def play_audio(filename):
 
                 sample = ord(data)  # Konversi byte ke angka (0-255)
                 dac.write(sample)  # Kirim ke DAC
-                sleep(0.0001)  # Delay kecil agar suara tidak terlalu cepat
+                sleep(0.0005)  # Delay kecil agar suara tidak terlalu cepat
 
         print("Audio selesai diputar.")
     except Exception as e:
