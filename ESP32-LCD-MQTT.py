@@ -137,4 +137,4 @@ except Exception as e:
     lcd.clear()
     lcd.putstr("Error, restart...")
     sleep(5)
-    machine.reset()  # Restart ESP32 jika error
+    machine.reset()  # Restart ESP32 jika error 
