@@ -9,15 +9,15 @@ from paho.mqtt.client import Client
 from gtts import gTTS
 
 # === CONFIGURATIONS === #
-ESP32_CAM_URL = "http://192.168.84.165/stream"
+ESP32_CAM_URL = "http://192.168.252.106/capture"  # GANTI KE /capture
 MQTT_BROKER = "broker.emqx.io"
 MQTT_PORT = 1883
-MQTT_TOPIC_TEXT = "baarian/text_message"
-MQTT_TOPIC_AUDIO = "baarian/audio_message"
-MQTT_TOPIC_RESET = "baarian/reset_status"
-MODEL_PATH = "myenv/Baarian-SIC-and-JISF/Baarian_Model_Light.pt"
+MQTT_TOPIC_TEXT = r"baarian/text_message"
+MQTT_TOPIC_AUDIO = r"baarian/audio_message"
+MQTT_TOPIC_RESET = r"baarian/reset_status"
+MODEL_PATH = r"baarian_project\Baarian_Model_Nano.pt"
 
-# === Variabel global yang bisa di-reset === #
+# === Variabel global === #
 word = ""
 sentence = []
 
@@ -27,7 +27,7 @@ client = Client(client_id=f"baarian-{uuid.uuid4()}")
 def on_connect(client, userdata, flags, rc):
     if rc == 0:
         print("MQTT Terhubung!")
-        client.subscribe(MQTT_TOPIC_RESET)  # ✅ Tambah listener reset
+        client.subscribe(MQTT_TOPIC_RESET)
     else:
         print("MQTT Error:", rc)
 
@@ -43,22 +43,23 @@ client.on_message = on_message
 client.connect(MQTT_BROKER, MQTT_PORT, 60)
 client.loop_start()
 
-# === YOLO Model Load === #
+# === Load YOLO Model === #
 model = YOLO(MODEL_PATH)
 
 # === Helper Functions === #
-def esp32_stream(url):
-    response = requests.get(url, stream=True, timeout=10)
-    bytes_data = b""
-    for chunk in response.iter_content(1024):
-        bytes_data += chunk
-        a, b = bytes_data.find(b'\xff\xd8'), bytes_data.find(b'\xff\xd9')
-        if a != -1 and b != -1:
-            jpg = bytes_data[a:b+2]
-            bytes_data = bytes_data[b+2:]
-            frame = cv2.imdecode(np.frombuffer(jpg, np.uint8), cv2.IMREAD_COLOR)
-            if frame is not None:
-                yield frame
+def esp32_capture(url):
+    try:
+        response = requests.get(url, timeout=5)
+        if response.status_code == 200:
+            img_array = np.asarray(bytearray(response.content), dtype=np.uint8)
+            frame = cv2.imdecode(img_array, cv2.IMREAD_COLOR)
+            return frame
+        else:
+            print("[ERROR] Gagal ambil gambar dari ESP32-CAM")
+            return None
+    except Exception as e:
+        print(f"[ERROR] Exception ambil gambar: {e}")
+        return None
 
 def send_text(msg):
     if msg.strip():
@@ -85,7 +86,11 @@ def run():
     cooldown = 1.0
 
     try:
-        for frame in esp32_stream(ESP32_CAM_URL):
+        while True:
+            frame = esp32_capture(ESP32_CAM_URL)
+            if frame is None:
+                continue
+
             results = model.predict(frame, conf=0.5, verbose=False)
             boxes = results[0].boxes
 
@@ -93,18 +98,17 @@ def run():
             if boxes and now - last_detect > cooldown:
                 label = results[0].names[int(boxes[0].cls.item())]
                 word += label
-                send_text(label)
+                send_text(word)  # Kirim word yang sudah bertambah, bukan per huruf
                 last_detect = now
                 print(f"Detected: {label} | Word: {word}")
 
-            # Tambah spasi jika 3.5 detik tanpa huruf
+
             if now - last_detect >= 3.5 and word:
                 sentence.append(word)
                 send_text(" ")
                 print(f"[SPASI] Kata selesai: {word}")
                 word = ""
 
-            # Kirim kalimat + audio jika idle 5 detik
             if now - last_detect >= 5.0 and sentence:
                 kalimat = " ".join(sentence)
                 send_text(kalimat)
@@ -112,7 +116,6 @@ def run():
                 print(f"[KIRIM KALIMAT] {kalimat}")
                 sentence = []
 
-            # Display
             annotated = results[0].plot()
             cv2.putText(annotated, f"Word: {word}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
             cv2.putText(annotated, f"Sentence: {' '.join(sentence)}", (10, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255,0), 2)
@@ -124,6 +127,8 @@ def run():
                 print("[RESET MANUAL] Word & Sentence direset.")
             elif key == ord('q'):
                 break
+
+            time.sleep(0.05)  # kecilin delay antara capture biar ga spam request
 
     finally:
         client.loop_stop()
