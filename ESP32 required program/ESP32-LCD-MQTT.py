@@ -158,4 +158,4 @@ except Exception as e:
     lcd.putstr("Error, restart...")
     sleep(5)
     import machine
-    machine.reset()
+    machine.reset() 

@@ -9,13 +9,13 @@ from paho.mqtt.client import Client
 from gtts import gTTS
 
 # === CONFIGURATIONS === #
-ESP32_CAM_URL = "http://192.168.252.106/capture"  # GANTI KE /capture
+ESP32_CAM_URL = "http://192.168.170.106/capture"  # GANTI KE /capture
 MQTT_BROKER = "broker.emqx.io"
 MQTT_PORT = 1883
 MQTT_TOPIC_TEXT = r"baarian/text_message"
 MQTT_TOPIC_AUDIO = r"baarian/audio_message"
 MQTT_TOPIC_RESET = r"baarian/reset_status"
-MODEL_PATH = r"baarian_project\Baarian_Model_Nano.pt"
+MODEL_PATH = r"baarian_project\AI Model\Baarian_Model_Nano.pt"
 
 # === Variabel global === #
 word = ""
