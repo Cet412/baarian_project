@@ -1,126 +1,119 @@
-## 📌 Instalasi dan Persyaratan
-### 1️⃣ Persiapan Sistem
-Pastikan Anda memiliki **Python 3.8+** dan **MicroPython** yang sudah di-flash ke ESP32.
+🧠 Baarian Project
+Baarian adalah sistem interaktif berbasis ESP32 yang memungkinkan komunikasi dua arah melalui teks dan audio menggunakan MQTT. Proyek ini terdiri dari dua bagian utama:
 
-### 2️⃣ Instalasi Library Python (Untuk PC)
-Jalankan perintah berikut di terminal:
-```sh
-pip install ultralytics opencv-python paho-mqtt gtts
-```
+ESP32 dengan LCD dan DAC: Menampilkan pesan teks dan memutar audio yang diterima melalui MQTT.
 
-### **📌 Cara Instalasi Library di ESP32 menggunakan Thonny IDE**  
----
+ESP32-CAM: Mengirimkan gambar melalui HTTP dan dapat diintegrasikan dengan sistem pengenalan wajah atau objek.
 
-### **🛠 1️⃣ Persiapan Awal**
-Sebelum memulai, pastikan sudah:
-✅ Menginstal **Thonny IDE**  
-✅ Menghubungkan **ESP32 ke komputer** melalui kabel USB  
-✅ Menginstal **MicroPython firmware** di ESP32  
-✅ Menyiapkan file **machine_i2c_lcd.py** di komputer  
+📁 Struktur Proyek
+graphql
+Salin
+Edit
+baarian_project/
+├── ESP32-LCD-MQTT.py         # Kode utama untuk ESP32 dengan LCD dan DAC
+├── machine_i2c_lcd.py        # Library untuk mengontrol LCD via I2C
+├── lcd_api.py                # API tambahan untuk LCD
+├── ESP32cam/                 # Folder berisi kode untuk ESP32-CAM
+│   └── ESP32cam.ino          # Kode utama untuk ESP32-CAM
+├── models/                   # Folder berisi model AI (jika ada)
+│   ├── Baarian_Model.pt
+│   └── Baarian_Model_Light.pt
+├── Streamlit/                # Aplikasi web untuk interaksi pengguna
+│   └── app.py
+├── requirements.txt          # Daftar dependensi Python
+└── README.md                 # Dokumentasi proyek
+🛠️ Persyaratan
+Perangkat Keras
+ESP32 Dev Board dengan DAC dan LCD (misalnya, ESP32-WROOM-32)
 
----
+ESP32-CAM (misalnya, AI-Thinker)
 
-### **📂 2️⃣ Mengunggah File `machine_i2c_lcd.py` ke ESP32**
-1️⃣ **Buka Thonny IDE**  
-2️⃣ **Hubungkan ESP32 ke Thonny**:
-   - Klik **Tools** → **Options...**  
-   - Pilih tab **Interpreter**  
-   - Pada "Interpreter", pilih **MicroPython (ESP32)**  
-   - Pada "Port", pilih COM port ESP32 (misalnya: COM3 atau /dev/ttyUSB0)  
-   - Klik **OK**  
+LCD I2C 16x2
 
-3️⃣ **Buka File Manager ESP32**:
-   - Klik **View** → **Files**  
-   - Akan muncul **File Explorer**, yang menampilkan file di komputer dan di ESP32  
+PAM8403 Amplifier
 
-4️⃣ **Unggah file `machine_i2c_lcd.py` ke ESP32**:
-   - Di panel kiri (komputer), cari file **machine_i2c_lcd.py**  
-   - Klik kanan file tersebut → Pilih **Upload to / (ESP32)**  
-   - File akan diunggah ke ESP32  
+Speaker
 
-💡 **Cek apakah file berhasil diunggah**:  
-   - Ketik di Thonny Shell:  
-     ```python
-     import os
-     os.listdir()
-     ```
-   - Jika `machine_i2c_lcd.py` muncul, berarti sudah berhasil ter-upload.  
+Kabel jumper dan breadboard
 
----
+Perangkat Lunak
+MicroPython firmware untuk ESP32
 
-### **📥 3️⃣ Instal Library `umqtt.simple` di ESP32**
-Sekarang, kita akan menginstal library **umqtt.simple** menggunakan **upip**.  
+Arduino IDE atau PlatformIO (untuk ESP32-CAM)
 
-1️⃣ **Buka Thonny Shell**  
-2️⃣ **Jalankan perintah berikut di MicroPython**:
-   ```python
-   import upip
-   upip.install('umqtt.simple')
-   ```
-3️⃣ **Tunggu beberapa detik** sampai proses instalasi selesai.  
-4️⃣ Jika berhasil, tidak akan ada error, dan library sudah bisa digunakan di ESP32.
+Python 3.8+
 
----
+Thonny IDE (opsional, untuk mengunggah file ke ESP32)
 
-### **✅ 4️⃣ Cek Apakah Library Sudah Terinstal**
-Untuk memastikan `umqtt.simple` sudah terinstal, jalankan di Thonny:  
-```python
-import umqtt.simple
-print("Library umqtt.simple berhasil diinstal!")
-```
-Jika tidak ada error, berarti library sudah siap digunakan.
+⚙️ Instalasi
+1. Menyiapkan ESP32 dengan LCD dan DAC
+Flash MicroPython ke ESP32.
 
----
+Gunakan Thonny IDE untuk mengunggah file berikut ke ESP32:
 
-## 🚀 Cara Penggunaan
-### 1️⃣ Jalankan Model di PC
-```sh
-python main.py
-```
+ESP32-LCD-MQTT.py
 
-#### 🔹 Tombol Kendali di PC
-- `r` : Reset kata yang sedang dikenali.
-- `u` : Tambah kata ke kalimat.
-- `s` : Kirim kata ke MQTT dan ubah ke suara.
-- `c` : Kirim seluruh kalimat ke MQTT dan ubah ke suara.
-- `x` : Kirim kata dan reset deteksi.
-- `z` : Kirim kalimat dan reset deteksi.
-- `q` : Keluar dari program.
+machine_i2c_lcd.py
 
-### 2️⃣ Jalankan ESP32 dan Terima Data
-ESP32 akan secara otomatis menampilkan teks yang diterima dari MQTT di LCD dan menyimpan file audio.
+lcd_api.py
 
-## 📡 Konfigurasi MQTT
-Broker MQTT yang digunakan adalah **broker.emqx.io**.
-- **Topik Teks:** `baarian/text_message`
-- **Topik Audio:** `baarian/audio_message`
+Edit ESP32-LCD-MQTT.py untuk menyesuaikan SSID dan password WiFi Anda.
 
-## 📌 Arsitektur Sistem
-1. Model YOLOv8 mendeteksi gerakan tangan dan mengonversinya ke teks.
-2. Teks dikirim melalui MQTT ke ESP32.
-3. Komputer menghasilkan suara menggunakan gTTS dan mengirimkannya ke ESP32 melalui MQTT.
-4. ESP32 menampilkan teks di LCD dan menyimpan file audio.
+Jalankan ESP32-LCD-MQTT.py sebagai program utama.
 
-## 🛠️ Hardware yang Digunakan
-- **ESP32**
-- **LCD I2C 20x4**
-- **Kamera (Webcam)**
-- **PC/Laptop dengan Python**
+2. Menyiapkan ESP32-CAM
+Buka ESP32cam.ino di Arduino IDE.
 
-## 🔧 Troubleshooting
-Jika terjadi error saat menjalankan model YOLO:
-- Pastikan file `Baarian_Model.pt` ada di direktori yang benar.
-- Gunakan Python 3.8+ dan pastikan library yang dibutuhkan sudah terinstal.
-- Cek koneksi ke MQTT broker dengan perintah:
-  ```sh
-  ping broker.emqx.io
-  ```
+Pilih board "AI Thinker ESP32-CAM" dan port yang sesuai.
 
-Jika ESP32 tidak menampilkan teks:
-- Pastikan WiFi terhubung dengan benar.
-- Periksa apakah ESP32 sudah berlangganan ke topik MQTT.
+Edit SSID dan password WiFi di kode.
 
-## 📜 Lisensi
-Proyek ini dibuat untuk keperluan riset dan edukasi.
+Unggah kode ke ESP32-CAM.
 
----
+Setelah berhasil terhubung ke WiFi, ESP32-CAM akan menampilkan alamat IP di Serial Monitor.
+
+3. Menyiapkan Aplikasi Streamlit (Opsional)
+Pastikan Python 3.8+ terinstal di komputer Anda.
+
+Instal dependensi dengan perintah:
+
+bash
+Salin
+Edit
+pip install -r requirements.txt
+
+3. Jalankan aplikasi Streamlit:
+
+bash
+Salin
+Edit
+streamlit run Streamlit/app.py
+🚀 Penggunaan
+Nyalakan ESP32 dan ESP32-CAM.
+
+ESP32 akan terhubung ke WiFi dan menunggu pesan dari broker MQTT.
+
+ESP32-CAM akan mengirimkan gambar melalui HTTP yang dapat diakses melalui alamat IP yang ditampilkan.
+
+Gunakan aplikasi Streamlit untuk mengirimkan pesan teks atau audio ke ESP32 melalui MQTT.
+
+ESP32 akan menampilkan pesan di LCD dan memutar audio melalui speaker.
+
+📸 Akses Kamera
+Setelah ESP32-CAM terhubung ke WiFi, Anda dapat mengakses gambar melalui browser dengan mengunjungi:
+
+arduino
+Salin
+Edit
+http://<alamat-ip-esp32-cam>/capture
+Gantilah <alamat-ip-esp32-cam> dengan alamat IP yang ditampilkan di Serial Monitor.
+
+🧪 Pengujian
+Gunakan MQTT client seperti MQTTX atau MQTT Explorer untuk mengirim pesan ke topik yang sesuai.
+
+Pastikan ESP32 menerima dan memproses pesan dengan benar.
+
+Uji koneksi kamera dengan mengakses URL yang disebutkan di atas.
+
+📬 Kontak
+Untuk pertanyaan atau saran, silakan hubungi email@example.com.
