@@ -116,6 +116,6 @@ Gantilah `<alamat-ip-esp32-cam>` dengan alamat IP yang ditampilkan di Serial Mon
 
 ## Kontak
 
-Untuk pertanyaan atau saran, silakan hubungi [email@example.com](cettaanantamaulana@gmail.com).
+Untuk pertanyaan atau saran, silakan hubungi [cettaanantamaulana@gmail.com](cettaanantamaulana@gmail.com).
 
 ---
