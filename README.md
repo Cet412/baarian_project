@@ -1,82 +1,81 @@
-# Baarian Project
+# Baarian Project 
 
-Baarian adalah sistem interaktif berbasis ESP32 yang memungkinkan komunikasi dua arah melalui teks dan audio menggunakan MQTT. Proyek ini terdiri dari dua bagian utama:
+Baarian is an interactive, ESP32-based IoT system that enables two-way communication through text and audio using the MQTT protocol. This project integrates hardware components with an AI model and a web interface, consisting of two main modules:
 
-1. **ESP32 dengan LCD dan DAC**: Menampilkan pesan teks dan memutar audio yang diterima melalui MQTT.
-2. **ESP32-CAM**: Mengirimkan gambar melalui HTTP dan dapat diintegrasikan dengan sistem pengenalan wajah atau objek.
+1. **ESP32 with LCD and DAC:** Displays text messages and plays audio received via MQTT.
+2. **ESP32-CAM:** Transmits image feeds via HTTP, ready for integration with facial or object recognition systems.
 
 ---
 
-## Struktur Proyek
-
-```
+## 📂 Project Structure
+```text
 baarian_project/
-├── ESP32-LCD-MQTT.py         # Kode utama untuk ESP32 dengan LCD dan DAC
-├── machine_i2c_lcd.py        # Library untuk mengontrol LCD via I2C
-├── lcd_api.py                # API tambahan untuk LCD
-├── ESP32cam/                 # Folder berisi kode untuk ESP32-CAM
-│   └── ESP32cam.ino          # Kode utama untuk ESP32-CAM
-├── models/                   # Folder berisi model AI (jika ada)
+├── ESP32-LCD-MQTT.py         # Main script for ESP32 with LCD and DAC
+├── machine_i2c_lcd.py        # Library for I2C LCD control
+├── lcd_api.py                # Additional API for LCD operations
+├── ESP32cam/                 # Directory containing ESP32-CAM code
+│   └── ESP32cam.ino          # Main Arduino sketch for ESP32-CAM
+├── models/                   # Directory for AI models
 │   ├── Baarian_Model.pt
 │   └── Baarian_Model_Light.pt
-├── Streamlit/                # Aplikasi web untuk interaksi pengguna
+├── Streamlit/                # Web application for user interaction
 │   └── app.py
-├── requirements.txt          # Daftar dependensi Python
-└── README.md                 # Dokumentasi proyek
+├── requirements.txt          # Python dependencies
+└── README.md                 # Project documentation
 ```
 
 ---
 
-## Persyaratan
+## Requirements
 
-### Perangkat Keras
+### Hardware
 
-* ESP32 Dev Board dengan DAC dan LCD (misalnya, ESP32-WROOM-32)
-* ESP32-CAM (misalnya, AI-Thinker)
-* LCD I2C 16x2
-* PAM8403 Amplifier
+* ESP32 Dev Board with DAC and LCD support (e.g., ESP32-WROOM-32)
+* ESP32-CAM (e.g., AI-Thinker module)
+* I2C 16x2 LCD Display
+* PAM8403 Audio Amplifier
 * Speaker
-* Kabel jumper dan breadboard
+* Jumper wires & Breadboard
 
-### Perangkat Lunak
+### Software
 
-* MicroPython firmware untuk ESP32
-* Arduino IDE atau PlatformIO (untuk ESP32-CAM)
+* MicroPython firmware for ESP32
+* Arduino IDE or PlatformIO (for ESP32-CAM)
 * Python 3.8+
-* Thonny IDE (opsional, untuk mengunggah file ke ESP32)
+* Thonny IDE (optional, for flashing MicroPython scripts)
 
 ---
 
-## Instalasi
+## Installation & Setup
 
-### 1. Menyiapkan ESP32 dengan LCD dan DAC
+### 1. Setting up the ESP32 (LCD & DAC)
 
-1. Flash MicroPython ke ESP32.
-2. Gunakan Thonny IDE untuk mengunggah file berikut ke ESP32:
+1. Flash MicroPython firmware to your ESP32.
+2. Use Thonny IDE to upload the following files to the ESP32:
 
    * `ESP32-LCD-MQTT.py`
    * `machine_i2c_lcd.py`
    * `lcd_api.py`
-3. Edit `ESP32-LCD-MQTT.py` untuk menyesuaikan SSID dan password WiFi Anda.
-4. Jalankan `ESP32-LCD-MQTT.py` sebagai program utama.
+3. Edit `ESP32-LCD-MQTT.py` to configure your WiFi SSID and password.
+4. Run `ESP32-LCD-MQTT.py` as the main script.
 
-### 2. Menyiapkan ESP32-CAM
+### 2. Setting up the ESP32-CAM
 
-1. Buka `ESP32cam.ino` di Arduino IDE.
-2. Pilih board "AI Thinker ESP32-CAM" dan port yang sesuai.
-3. Edit SSID dan password WiFi di kode.
-4. Unggah kode ke ESP32-CAM.
-5. Setelah berhasil terhubung ke WiFi, ESP32-CAM akan menampilkan alamat IP di Serial Monitor.
+1. Open `ESP32cam.ino` in Arduino IDE..
+2. Select the "AI Thinker ESP32-CAM" board and the appropriate COM port.
+3. Update your WiFi SSID and password within the sketch.
+4. Upload the code to the ESP32-CAM.
+5. Once connected to WiFi, the ESP32-CAM will display its IP address in the Serial Monitor.
 
-### 3. Menyiapkan Aplikasi Streamlit (Opsional)
+### 3. Setting up the Streamlit Web App
 
-1. Pastikan Python 3.8+ terinstal di komputer Anda.
-2. Instal dependensi dengan perintah:
+1. Ensure Python 3.8+ is installed on your machine.
+2. Install the required dependencies:
 
    ```bash
    pip install -r requirements.txt
    ```
-3. Jalankan aplikasi Streamlit:
+3. Run the Streamlit application:
 
    ```bash
    streamlit run Streamlit/app.py
@@ -84,38 +83,30 @@ baarian_project/
 
 ---
 
-## Penggunaan
+## Usage Guide
 
-1. Nyalakan ESP32 dan ESP32-CAM.
-2. ESP32 akan terhubung ke WiFi dan menunggu pesan dari broker MQTT.
-3. ESP32-CAM akan mengirimkan gambar melalui HTTP yang dapat diakses melalui alamat IP yang ditampilkan.
-4. Gunakan aplikasi Streamlit untuk mengirimkan pesan teks atau audio ke ESP32 melalui MQTT.
-5. ESP32 akan menampilkan pesan di LCD dan memutar audio melalui speaker.
+1. Power on both the ESP32 and ESP32-CAM modules.
+2. The ESP32 will connect to WiFi and listen for incoming messages from the MQTT broker.
+3. The ESP32-CAM will start streaming images over HTTP, accessible via the IP address shown in the Serial Monitor.
+4. Use the Streamlit web app to send text or audio messages to the ESP32 via MQTT.
+5. The ESP32 will display the received text on the LCD and output the audio through the connected speaker.
 
 ---
 
-## Akses Kamera
+## Camera Access
 
-Setelah ESP32-CAM terhubung ke WiFi, Anda dapat mengakses gambar melalui browser dengan mengunjungi:
+Once the ESP32-CAM is connected to WiFi, you can access the image capture feed via your web browser by navigating to:
 
 ```
-http://<alamat-ip-esp32-cam>/capture
+http://<esp32-cam-ip-address>/capture
 ```
 
-Gantilah `<alamat-ip-esp32-cam>` dengan alamat IP yang ditampilkan di Serial Monitor.
+(Replace `<esp32-cam-ip-address>` with the IP address printed in your Serial Monitor)
 
 ---
 
-## Pengujian
+## Contact
 
-* Gunakan MQTT client seperti MQTTX atau MQTT Explorer untuk mengirim pesan ke topik yang sesuai.
-* Pastikan ESP32 menerima dan memproses pesan dengan benar.
-* Uji koneksi kamera dengan mengakses URL yang disebutkan di atas.
-
----
-
-## Kontak
-
-Untuk pertanyaan atau saran, silakan hubungi [cettaanantamaulana@gmail.com](cettaanantamaulana@gmail.com).
+For any inquiries, suggestions, or collaboration opportunities, feel free to reach out via email at [cettaanantamaulana@gmail.com](cettaanantamaulana@gmail.com).
 
 ---
