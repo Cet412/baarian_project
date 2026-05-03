@@ -29,8 +29,8 @@
   #define PCLK_GPIO_NUM     22
 #endif
 
-const char* ssid = "Infinix NOTE 30";
-const char* password = "10902493";
+const char* ssid = "SBSN";
+const char* password = "*#aulaSBSN#";
 
 #define LED_BUILTIN 4  // LED pada board ESP32-CAM
 

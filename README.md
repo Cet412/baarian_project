@@ -1,112 +1,105 @@
-# Baarian Project 
+# Baarian Project: IoT & Edge AI Sign Language Interpreter
+Baarian is an advanced, interactive Edge AI and IoT system that enables real-time communication by translating visual hand gestures or objects into both text messages and audio feeds. The project integrates a local YOLOv8 detection pipeline, an asynchronous MQTT messaging architecture, and a MicroPython-enabled hardware interface.
 
-Baarian is an interactive, ESP32-based IoT system that enables two-way communication through text and audio using the MQTT protocol. This project integrates hardware components with an AI model and a web interface, consisting of two main modules:
+## 📂 Project Directory Structure
 
-1. **ESP32 with LCD and DAC:** Displays text messages and plays audio received via MQTT.
-2. **ESP32-CAM:** Transmits image feeds via HTTP, ready for integration with facial or object recognition systems.
-
----
-
-## 📂 Project Structure
 ```text
 baarian_project/
-├── ESP32-LCD-MQTT.py         # Main script for ESP32 with LCD and DAC
-├── machine_i2c_lcd.py        # Library for I2C LCD control
-├── lcd_api.py                # Additional API for LCD operations
-├── ESP32cam/                 # Directory containing ESP32-CAM code
-│   └── ESP32cam.ino          # Main Arduino sketch for ESP32-CAM
-├── models/                   # Directory for AI models
-│   ├── Baarian_Model.pt
-│   └── Baarian_Model_Light.pt
-├── Streamlit/                # Web application for user interaction
-│   └── app.py
-├── requirements.txt          # Python dependencies
-└── README.md                 # Project documentation
+├── .env.example              # Configuration template for credentials
+├── .gitignore                # Git exclusion rules for security
+├── AI Model/                 # Edge AI weights
+│   └── Baarian_Model_Nano.pt
+├── ESP32 required program/   # MicroPython receiver scripts
+│   ├── ESP32-LCD-MQTT.py     # Main hardware subscriber script
+│   ├── machine_i2c_lcd.py    # I2C LCD driver
+│   └── lcd_api.py            # Hardware LCD API
+├── ESP32cam/                 # Camera firmware
+│   └── ESP32cam.ino          # Arduino C++ stream sketch
+├── main.py                   # Unified processing and detection client
+└── requirements.txt          # Absolute Python dependencies
 ```
-
----
-
-## Requirements
-
-### Hardware
-
-* ESP32 Dev Board with DAC and LCD support (e.g., ESP32-WROOM-32)
-* ESP32-CAM (e.g., AI-Thinker module)
-* I2C 16x2 LCD Display
-* PAM8403 Audio Amplifier
-* Speaker
-* Jumper wires & Breadboard
-
-### Software
-
-* MicroPython firmware for ESP32
-* Arduino IDE or PlatformIO (for ESP32-CAM)
-* Python 3.8+
-* Thonny IDE (optional, for flashing MicroPython scripts)
-
----
 
 ## Installation & Setup
+### PC/Server Deployment
+A. Prerequisites
+Ensure you have [**Python 3.8+**](https://www.python.org/downloads/) and [**FFmpeg**](https://www.ffmpeg.org/) installed and added to your system's PATH for handling audio conversions
 
-### 1. Setting up the ESP32 (LCD & DAC)
+B. Clone & Environment Configuration
+```bash
+# Clone the repository and navigate into it
+git clone https://github.com/Cet412/baarian_project.git
+cd baarian_project
 
-1. Flash MicroPython firmware to your ESP32.
-2. Use Thonny IDE to upload the following files to the ESP32:
+# Set up a python virtual environment
+python -m venv .venv
 
-   * `ESP32-LCD-MQTT.py`
-   * `machine_i2c_lcd.py`
-   * `lcd_api.py`
-3. Edit `ESP32-LCD-MQTT.py` to configure your WiFi SSID and password.
-4. Run `ESP32-LCD-MQTT.py` as the main script.
+# Activate the virtual environment
+# Windows:
+.\\.venv\\Scripts\\activate
+# Linux/macOS:
+source .venv/bin/activate
+```
 
-### 2. Setting up the ESP32-CAM
+C. Install Dependencies
+```bash
+pip install -r requirements.txt
+```
 
-1. Open `ESP32cam.ino` in Arduino IDE..
-2. Select the "AI Thinker ESP32-CAM" board and the appropriate COM port.
-3. Update your WiFi SSID and password within the sketch.
-4. Upload the code to the ESP32-CAM.
-5. Once connected to WiFi, the ESP32-CAM will display its IP address in the Serial Monitor.
+D. Local Variables Configuration
+Create a `.env` file in the project root by copying the .env.example file
+```bash
+cp .env.example .env
+```
+Fill in the `.env` file with your specific target configuration
+```env
+MQTT_BROKER=broker.emqx.io
+MQTT_PORT=1883
+MQTT_TOPIC_TEXT=baarian/text_message
+MQTT_TOPIC_AUDIO=baarian/audio_message
+MQTT_TOPIC_RESET=baarian/reset_status
+ESP32_CAM_URL=http://<esp32-cam-ip>/capture
+USE_WEBCAM=True
+```
 
-### 3. Setting up the Streamlit Web App
+### MicroPython ESP32 Deployment
+A. Flashing the Scripts
+   1. Open Thonny IDE, go to Tools → Options → Interpreter, and set it to MicroPython (ESP32).
+   2. Upload the following files to the root directory of your ESP32:
+   `ESP32-LCD-MQTT.py`
+   `machine_i2c_lcd.py`
+   `lcd_api.py`
 
-1. Ensure Python 3.8+ is installed on your machine.
-2. Install the required dependencies:
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-3. Run the Streamlit application:
-
-   ```bash
-   streamlit run Streamlit/app.py
-   ```
-
----
+B. Install MQTT Dependencies on ESP32
+Open the Thonny Shell while connected to the ESP32 and execute the following:
+```python
+import upip
+upip.install('umqtt.simple')
+```
 
 ## Usage Guide
-
-1. Power on both the ESP32 and ESP32-CAM modules.
-2. The ESP32 will connect to WiFi and listen for incoming messages from the MQTT broker.
-3. The ESP32-CAM will start streaming images over HTTP, accessible via the IP address shown in the Serial Monitor.
-4. Use the Streamlit web app to send text or audio messages to the ESP32 via MQTT.
-5. The ESP32 will display the received text on the LCD and output the audio through the connected speaker.
-
----
-
-## Camera Access
-
-Once the ESP32-CAM is connected to WiFi, you can access the image capture feed via your web browser by navigating to:
-
-```
-http://<esp32-cam-ip-address>/capture
+### Starting the System
+Once the ESP32 is powered and connected to the MQTT broker, execute the detection engine on the server:
+```sh
+python main.py
 ```
 
-(Replace `<esp32-cam-ip-address>` with the IP address printed in your Serial Monitor)
+### Manual Interface & Controls
+The detection engine continuously runs in real-time. Use the following keystrokes in the visual detection window:
+- `r` : Manual Reset — Clears the current word and sentence buffers.
+- `q` : Terminate — Closes the application safely.
 
----
+### Background Automation
+- **Auto-Space**: If no matching detection changes for 3.5 seconds, the engine completes the current word and adds a trailing space.
+- **Auto-Sentence**: After 5.0 seconds of idle detection time, the accumulated words are joined into a sentence, published via text MQTT, translated to speech, and emitted to the hardware speaker asynchronously.
 
-## Contact
+## Troubleshooting
 
-For any inquiries, suggestions, or collaboration opportunities, feel free to reach out via email at [cettaanantamaulana@gmail.com](cettaanantamaulana@gmail.com).
-
----
+1. Blocking I/O or Performance Lag
+- Solution: Ensure FFmpeg is correctly mapped to your environmental path. The audio processing is run asynchronously via standard threads to prevent interface freezing.
+2. MQTT Subscription Failures
+- Solution: Test the reachability of the broker using standard network tools:
+```bash
+ ping broker.emqx.io
+```
+3. ESP32 Disconnection
+- Solution: Confirm stable Wi-Fi connectivity and valid credential provisioning inside the `ESP32-LCD-MQTT.py` setup module.

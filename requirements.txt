@@ -1,6 +1,7 @@
 opencv-python
 numpy
 requests
-paho-mqtt
+python-dotenv
 ultralytics
+paho-mqtt
 gTTS
