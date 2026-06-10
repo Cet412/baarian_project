@@ -6,6 +6,7 @@
 #include "soc/soc.h"
 #include "soc/rtc_cntl_reg.h"
 #include "esp_http_server.h"
+#include "secrets.h"
 
 // Select camera model
 #define CAMERA_MODEL_AI_THINKER
@@ -29,8 +30,8 @@
   #define PCLK_GPIO_NUM     22
 #endif
 
-const char* ssid = "SBSN";
-const char* password = "*#aulaSBSN#";
+const char* ssid = WIFI_SSID;
+const char* password = WIFI_PASSWORD;
 
 #define LED_BUILTIN 4  // LED pada board ESP32-CAM
 

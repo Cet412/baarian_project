@@ -1,3 +1,5 @@
 # Ignore environment files containing secrets
 .env
 ESP32 required program/.env
+ESP32cam/secrets.h
+ESP32cam/secrets.env
