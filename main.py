@@ -15,16 +15,16 @@ load_dotenv()
 
 MQTT_BROKER = os.getenv("MQTT_BROKER", "broker.emqx.io")
 MQTT_PORT = int(os.getenv("MQTT_PORT", 1883))
-MQTT_TOPIC_TEXT = os.getenv("MQTT_TOPIC_TEXT", "baarian/text_message")
-MQTT_TOPIC_AUDIO = os.getenv("MQTT_TOPIC_AUDIO", "baarian/audio_message")
-MQTT_TOPIC_RESET = os.getenv("MQTT_TOPIC_RESET", "baarian/reset_status")
+MQTT_TOPIC_TEXT = os.getenv("MQTT_TOPIC_TEXT", "symbara/text_message")
+MQTT_TOPIC_AUDIO = os.getenv("MQTT_TOPIC_AUDIO", "symbara/audio_message")
+MQTT_TOPIC_RESET = os.getenv("MQTT_TOPIC_RESET", "symbara/reset_status")
 ESP32_CAM_URL = os.getenv("ESP32_CAM_URL", "http://10.105.18.106/capture")
 USE_WEBCAM = os.getenv("USE_WEBCAM", "True").lower() == "true"
 
 # Cross-platform Path Resolution
-MODEL_PATH = os.path.join("AI Model", "Baarian_Model_Nano.pt")
+MODEL_PATH = os.path.join("AI Model", "symbara_Model_Nano.pt")
 if not os.path.exists(MODEL_PATH):
-    MODEL_PATH = os.path.join("baarian_project", "AI Model", "Baarian_Model_Nano.pt")
+    MODEL_PATH = os.path.join("symbara_project", "AI Model", "symbara_Model_Nano.pt")
 
 # === GLOBAL STATES === #
 word = ""
@@ -34,7 +34,7 @@ mqtt_connected = False
 # === MQTT CLIENT SETUP (V2) === #
 client = Client(
     callback_api_version=CallbackAPIVersion.VERSION2,
-    client_id=f"baarian-{uuid.uuid4()}"
+    client_id=f"symbara-{uuid.uuid4()}"
 )
 
 def on_connect(client, userdata, flags, reason_code, properties):
@@ -184,7 +184,7 @@ def run():
             status_text = "🟢 MQTT OK" if mqtt_connected else "🔴 MQTT ERROR"
             cv2.putText(annotated, status_text, (10, 110), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0) if mqtt_connected else (0, 0, 255), 2)
 
-            cv2.imshow("Baarian YOLO Detection", annotated)
+            cv2.imshow("Symbara YOLO Detection", annotated)
 
             key = cv2.waitKey(1) & 0xFF
             if key == ord('r'):

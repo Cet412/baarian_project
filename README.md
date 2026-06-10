@@ -1,14 +1,14 @@
-# Baarian Project: IoT & Edge AI Sign Language Interpreter
-Baarian is an advanced, interactive Edge AI and IoT system that enables real-time communication by translating visual hand gestures or objects into both text messages and audio feeds. The project integrates a local YOLOv8 detection pipeline, an asynchronous MQTT messaging architecture, and a MicroPython-enabled hardware interface.
+# Symbara Project: IoT & Edge AI Sign Language Interpreter
+Symbara is an advanced, interactive Edge AI and IoT system that enables real-time communication by translating visual hand gestures or objects into both text messages and audio feeds. The project integrates a local YOLOv8 detection pipeline, an asynchronous MQTT messaging architecture, and a MicroPython-enabled hardware interface.
 
 ## 📂 Project Directory Structure
 
 ```text
-baarian_project/
+symbara_project/
 ├── .env.example              # Configuration template for credentials
 ├── .gitignore                # Git exclusion rules for security
 ├── AI Model/                 # Edge AI weights
-│   └── Baarian_Model_Nano.pt
+│   └── symbara_Model_Nano.pt
 ├── ESP32 required program/   # MicroPython receiver scripts
 │   ├── ESP32-LCD-MQTT.py     # Main hardware subscriber script
 │   ├── machine_i2c_lcd.py    # I2C LCD driver
@@ -27,8 +27,8 @@ Ensure you have [**Python 3.8+**](https://www.python.org/downloads/) and [**FFmp
 B. Clone & Environment Configuration
 ```bash
 # Clone the repository and navigate into it
-git clone https://github.com/Cet412/baarian_project.git
-cd baarian_project
+git clone https://github.com/Cet412/symbara_project.git
+cd symbara_project
 
 # Set up a python virtual environment
 python -m venv .venv
@@ -54,9 +54,9 @@ Fill in the `.env` file with your specific target configuration
 ```env
 MQTT_BROKER=broker.emqx.io
 MQTT_PORT=1883
-MQTT_TOPIC_TEXT=baarian/text_message
-MQTT_TOPIC_AUDIO=baarian/audio_message
-MQTT_TOPIC_RESET=baarian/reset_status
+MQTT_TOPIC_TEXT=symbara/text_message
+MQTT_TOPIC_AUDIO=symbara/audio_message
+MQTT_TOPIC_RESET=symbara/reset_status
 ESP32_CAM_URL=http://<esp32-cam-ip>/capture
 USE_WEBCAM=True
 ```

@@ -11,10 +11,10 @@ safe_pin = Pin(0, Pin.IN)
 sleep(2)
 
 if safe_pin.value() == 0:
-    print("SAFE MODE aktif. Tidak menjalankan program utama.")
+    print("SAFE MODE active. Not running the main program.")
     sys.exit()
 
-print("Normal mode: menjalankan program Baarian...")
+print("Normal mode: running the Baarian program...")
 
 # === Setup WiFi ===
 SSID = "Infinix NOTE 30"
@@ -24,7 +24,7 @@ sta = network.WLAN(network.STA_IF)
 sta.active(True)
 
 if not sta.isconnected():
-    print("Menyambungkan ke WiFi...")
+    print("Connecting to WiFi...")
     sta.connect(SSID, PASSWORD)
 
 while not sta.isconnected():
@@ -52,14 +52,14 @@ lcd.putstr("MQTT Init...")
 # === Setup DAC Audio (PAM8403) ===
 dac = DAC(Pin(25))  # DAC0 = GPIO25
 
-# === Setup Tombol Reset Kata (GPIO32) ===
+# === Setup Word Reset Button (GPIO32) ===
 reset_btn = Pin(32, Pin.IN, Pin.PULL_DOWN)
 prev_btn_state = 0
 
-# === Variabel audio file ===
+# === Audio file variable ===
 audio_file = None
 
-# === Fungsi Play Audio ===
+# === Play Audio Function ===
 def play_audio(filename):
     try:
         with open(filename, "rb") as f:
@@ -71,24 +71,24 @@ def play_audio(filename):
                 sample = ord(data)
                 dac.write(sample)
                 sleep(0.0005)
-        print("Audio selesai diputar.")
+        print("Audio playback finished.")
     except Exception as e:
-        print("Gagal memutar audio:", e)
+        print("Failed to play audio:", e)
 
-# === Callback MQTT ===
+# === MQTT Callback ===
 def sub_cb(topic, msg):
     global audio_file
 
     if topic == TOPIC_TEXT.encode():
         text = msg.decode()
-        print("Pesan teks diterima:", text)
+        print("Text message received:", text)
         lcd.clear()
         lcd.putstr(text)
         sleep(0.5)
 
     elif topic == TOPIC_AUDIO.encode():
         if msg == b"END":
-            print("File audio selesai diterima.")
+            print("Audio file reception complete.")
             if audio_file:
                 audio_file.close()
                 audio_file = None
@@ -98,11 +98,11 @@ def sub_cb(topic, msg):
                 if audio_file is None:
                     audio_file = open("output.wav", "wb")
                 audio_file.write(msg)
-                print(f"Menerima data audio: {len(msg)} bytes")
+                print(f"Receiving audio data: {len(msg)} bytes")
             except Exception as e:
-                print("Error saat menyimpan audio:", e)
+                print("Error saving audio:", e)
 
-# === Fungsi Koneksi MQTT ===
+# === MQTT Connection Function ===
 def connect_mqtt():
     global client
     while True:
@@ -117,13 +117,13 @@ def connect_mqtt():
             lcd.putstr("MQTT Ready")
             return
         except Exception as e:
-            print("Gagal koneksi MQTT, mencoba ulang...", e)
+            print("Failed to connect MQTT, retrying...", e)
             lcd.clear()
             lcd.putstr("MQTT Failed...")
             sleep(5)
 
 connect_mqtt()
-print("MQTT Siap, menunggu pesan...")
+print("MQTT Ready, waiting for messages...")
 
 # === Main Loop ===
 try:
@@ -132,12 +132,12 @@ try:
 
         current_btn_state = reset_btn.value()
         if current_btn_state == 1 and prev_btn_state == 0:
-            print("Tombol reset ditekan. LCD dikosongkan.")
+            print("Reset button pressed. Clearing LCD.")
             lcd.clear()
 
-            # Kirim sinyal reset ke broker
+            # Send reset signal to broker
             client.publish(TOPIC_RESET, b"RESET")
-            print("Sinyal RESET dikirim ke broker.")
+            print("RESET signal sent to broker.")
 
             sleep(0.3)  # debounce
 
@@ -153,7 +153,7 @@ except KeyboardInterrupt:
     lcd.display_off()
 
 except Exception as e:
-    print("Terjadi error:", e)
+    print("An error occurred:", e)
     lcd.clear()
     lcd.putstr("Error, restart...")
     sleep(5)
