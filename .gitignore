@@ -1,0 +1,3 @@
+# Ignore environment files containing secrets
+.env
+ESP32 required program/.env

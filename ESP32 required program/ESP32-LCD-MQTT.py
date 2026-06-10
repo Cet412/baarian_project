@@ -2,9 +2,38 @@ from machine import Pin, SoftI2C, DAC
 from machine_i2c_lcd import I2cLcd
 from time import sleep
 import network
-import os
 import sys
 from umqtt.simple import MQTTClient
+
+# === Load credentials from .env ===
+
+def load_env(filename):
+    env = {}
+    try:
+        with open(filename, "r") as f:
+            for line in f:
+                line = line.strip()
+                if not line or line.startswith("#"):
+                    continue
+                if "=" not in line:
+                    continue
+                key, value = line.split("=", 1)
+                env[key.strip()] = value.strip()
+    except Exception as e:
+        print("Warning: Failed to load .env:", e)
+    return env
+
+
+env = load_env(".env")
+
+
+def get_env(name, required=False):
+    value = env.get(name)
+    if required and not value:
+        print("Missing required environment variable:", name)
+        sys.exit(1)
+    return value
+
 
 # === Setup SAFE MODE (GPIO 0 BOOT Button) ===
 safe_pin = Pin(0, Pin.IN)
@@ -17,8 +46,8 @@ if safe_pin.value() == 0:
 print("Normal mode: running the Baarian program...")
 
 # === Setup WiFi ===
-SSID = "Infinix NOTE 30"
-PASSWORD = "10902493"
+SSID = get_env("WIFI_SSID", required=True)
+PASSWORD = get_env("WIFI_PASSWORD", required=True)
 
 sta = network.WLAN(network.STA_IF)
 sta.active(True)
@@ -33,11 +62,11 @@ while not sta.isconnected():
 print("WiFi Connected:", sta.ifconfig())
 
 # === Setup MQTT ===
-MQTT_BROKER = "broker.emqx.io"
-CLIENT_ID = "83hiufeg728j20"
-TOPIC_TEXT = "baarian/text_message"
-TOPIC_AUDIO = "baarian/audio_message"
-TOPIC_RESET = "baarian/reset_status"
+MQTT_BROKER = get_env("MQTT_BROKER", required=True)
+CLIENT_ID = get_env("MQTT_CLIENT_ID", required=True)
+TOPIC_TEXT = get_env("MQTT_TOPIC_TEXT", required=True)
+TOPIC_AUDIO = get_env("MQTT_TOPIC_AUDIO", required=True)
+TOPIC_RESET = get_env("MQTT_TOPIC_RESET", required=True)
 
 # === Setup I2C LCD ===
 I2C_ADDR = 0x27
